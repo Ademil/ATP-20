@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EngenharIA ATP | APavan Engenharia</title>
+
+<meta name="theme-color" content="#0b0b0b">
+<meta name="description" content="Análise Técnica de Projetos Estruturais em Concreto Armado conforme NBR 6118.">
+
+<link rel="manifest" href="data:application/json,{
+  &quot;name&quot;:&quot;EngenharIA ATP&quot;,
+  &quot;short_name&quot;:&quot;ATP&quot;,
+  &quot;start_url&quot;:&quot;.&quot;,
+  &quot;display&quot;:&quot;standalone&quot;,
+  &quot;background_color&quot;:&quot;#0b0b0b&quot;,
+  &quot;theme_color&quot;:&quot;#0b0b0b&quot;
+}">
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Montserrat,sans-serif;
+  background:#0b0b0b;
+  color:#fff;
+}
+.bg{
+  position:fixed;inset:0;
+  background:url('https://images.unsplash.com/photo-1590650046871-92c887180603?auto=format&fit=crop&q=80&w=1600') center/cover no-repeat;
+  z-index:-1;
+}
+.bg::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.8)}
+
+.container{
+  max-width:440px;
+  margin:20px auto;
+  padding:22px;
+  border-radius:18px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 20px 40px rgba(0,0,0,.6);
+}
+
+header{text-align:center;margin-bottom:18px}
+header img{
+  width:90px;height:90px;
+  border-radius:50%;
+  border:3px solid #D4AF37;
+  object-fit:cover;
+}
+h1{font-size:22px;margin-top:10px}
+.gold{color:#D4AF37}
+.sub{font-size:12px;color:#ccc}
+
+.section{margin-top:18px}
+.section h3{
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:#D4AF37;
+  margin-bottom:8px;
+}
+
+input,select,textarea,button{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  margin-bottom:10px;
+  font-size:14px;
+}
+textarea{resize:none}
+
+button{
+  background:#D4AF37;
+  color:#000;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+button:hover{transform:scale(1.02)}
+
+.small{font-size:11px;color:#bbb}
+.qr{text-align:center;margin-top:12px}
+
+.footer{
+  margin-top:18px;
+  font-size:10px;
+  color:#aaa;
+  text-align:center;
+}
+.legal{
+  font-size:9px;
+  color:#888;
+  margin-top:10px;
+  line-height:1.4;
+}
+</style>
+</head>
+
+<body>
+<div class="bg"></div>
+
+<div class="container">
+
+<header>
+<img src="foto.jpg" alt="Engenheiro Responsável">
+<h1>EngenharIA <span class="gold">ATP</span></h1>
+<div class="sub">
+APavan Engenharia & Consultoria<br>
+Eng. Ademilton Pavan – CREA SC 86959-8
+</div>
+</header>
+
+<div class="section">
+<h3>Solicitação Técnica de ATP</h3>
+
+<form onsubmit="processar(event)">
+<select id="tipo" required>
+<option value="">Tipo de obra</option>
+<option>Residencial Unifamiliar</option>
+<option>Residencial Multifamiliar</option>
+<option>Comercial</option>
+<option>Industrial</option>
+<option>Reforço Estrutural</option>
+</select>
+
+<input id="area" type="number" placeholder="Área construída (m²)" required>
+
+<select id="padrao" required>
+<option value="">Padrão construtivo</option>
+<option>Econômico</option>
+<option>Médio</option>
+<option>Alto</option>
+</select>
+
+<input id="cidade" placeholder="Cidade / UF" required>
+
+<select id="norma">
+<option>NBR 6118 – Concreto Armado</option>
+<option>NBR 6120 – Ações</option>
+<option>NBR 8681 – Combinações</option>
+</select>
+
+<textarea id="analise" rows="3" placeholder="Análise técnica preliminar"></textarea>
+
+<label class="small">📎 Anexar projeto (PDF / DWG)</label>
+<input type="file">
+
+<button>Gerar Laudo ATP + WhatsApp</button>
+</form>
+</div>
+
+<div class="section qr">
+<canvas id="qr"></canvas>
+<div class="small" id="idlaudo"></div>
+</div>
+
+<div class="legal">
+Declaro que esta Análise Técnica de Projeto (ATP) é elaborada conforme boas práticas de engenharia,
+normas técnicas vigentes e sob responsabilidade do profissional habilitado.
+</div>
+
+<div class="footer">
+© 2025 EngenharIA ATP • APavan Engenharia
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+function processar(e){
+e.preventDefault();
+
+const id="ATP-"+Date.now();
+document.getElementById("idlaudo").innerText=id;
+
+new QRious({
+element:document.getElementById("qr"),
+value:id,
+size:120
+});
+
+const { jsPDF } = window.jspdf;
+const pdf=new jsPDF();
+
+pdf.setFontSize(12);
+pdf.text("LAUDO ATP – ANÁLISE TÉCNICA DE PROJETO",10,15);
+pdf.setFontSize(10);
+pdf.text("Responsável Técnico: Eng. Ademilton Pavan",10,25);
+pdf.text("CREA SC 86959-8",10,31);
+pdf.text("ID do Laudo: "+id,10,38);
+pdf.text("Tipo de obra: "+tipo.value,10,48);
+pdf.text("Área construída: "+area.value+" m²",10,56);
+pdf.text("Padrão construtivo: "+padrao.value,10,64);
+pdf.text("Cidade/UF: "+cidade.value,10,72);
+pdf.text("Norma: "+norma.value,10,80);
+pdf.text("Análise preliminar:",10,90);
+pdf.text(analise.value || "Não informado",10,98);
+
+pdf.text(
+"Projeto estrutural e consultoria técnica em concreto armado, conforme NBR 6118, incluindo análise, dimensionamento e detalhamento.",
+10,120,{maxWidth:190}
+);
+
+pdf.text("Documento com certificação digital e QR Code.",10,150);
+pdf.save("Laudo_ATP_"+id+".pdf");
+
+const msg=
+`Solicitação de ATP%0AID: ${id}%0A`+
+`Tipo: ${tipo.value}%0AÁrea: ${area.value} m²%0A`+
+`Padrão: ${padrao.value}%0ACidade: ${cidade.value}%0A`+
+`Norma: ${norma.value}%0A%0A`+
+`Projeto será anexado manualmente.`;
+
+window.open("https://wa.me/55489999862981?text="+msg,"_blank");
+
+alert("Laudo ATP gerado em PDF.\nAnexe o projeto manualmente no WhatsApp.");
+}
+</script>
+
+</body>
+</html>
